@@ -24,7 +24,7 @@ namespace MethodsRecorder.Writters
 
             using (var sw = new StreamWriter(FilePath, true, Encoding.UTF8))
             {
-                sw.WriteLine($"#METHOD_{Id}:");
+                sw.WriteLine($"#METHOD_{Id} [{data.MethodName}]:");
                 sw.WriteLine(data.Header);
                 sw.WriteLine(data.Data);
                 sw.WriteLine();

@@ -16,7 +16,7 @@ namespace MethodsRecorderTests
             var recordedPersonsDao = recorder
                 .CreateRecordedObject<IPersonsDao>(personsDao)
                 .Object;
-
+            
             recordedPersonsDao.GetOne("Jan", "Kowalski");
             recordedPersonsDao.GetAllPersons();
         }
