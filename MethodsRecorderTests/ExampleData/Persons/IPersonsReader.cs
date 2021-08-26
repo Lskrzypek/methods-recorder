@@ -2,7 +2,7 @@
 
 namespace MethodsRecorderTests.ExampleData.Persons
 {
-    internal interface IPersonsReader
+    public interface IPersonsReader
     {
         IEnumerable<Person> ReadAllPersons();
     }

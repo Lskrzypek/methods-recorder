@@ -2,7 +2,7 @@
 
 namespace MethodsRecorderTests.ExampleData.Persons
 {
-    internal interface IPersonsDao
+    public interface IPersonsDao
     {
         IEnumerable<Person> GetAdults();
         IEnumerable<Person> GetAllPersons();

@@ -7,6 +7,12 @@ namespace MethodsRecorder
         public T Object { get; }
         public T OrginalObject { get; }
 
+        public RecordedObject(T obj, T orginalObject)
+        {
+            Object = obj;
+            OrginalObject = orginalObject;
+        }
+
         public RecordedObject<T> RecordWhen(Func<Method, bool> predicate)
         {
             throw new NotImplementedException();

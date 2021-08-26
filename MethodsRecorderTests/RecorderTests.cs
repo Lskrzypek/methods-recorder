@@ -10,15 +10,15 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example()
         {
-            var recorder = new Recorder();
+            var recorder = new Recorder("test.txt");
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
                 .CreateRecordedObject<IPersonsDao>(personsDao)
-                .RecordWhen(x => x.MethodName == "GetOne")
-                .SetupMethod("GetOne", x => x.OnlyReturnValue());
+                .Object;
 
-
+            recordedPersonsDao.GetOne("Jan", "Kowalski");
+            recordedPersonsDao.GetAllPersons();
         }
     }
 }

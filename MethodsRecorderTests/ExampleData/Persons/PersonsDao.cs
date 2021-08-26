@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace MethodsRecorderTests.ExampleData.Persons
 {
-    internal class PersonsDao : IPersonsDao
+    public class PersonsDao : IPersonsDao
     {
         private readonly IPersonsReader PersonsReader;
 

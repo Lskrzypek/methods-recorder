@@ -2,7 +2,7 @@
 
 namespace MethodsRecorderTests.ExampleData.Persons
 {
-    internal class PersonsReader : IPersonsReader
+    public class PersonsReader : IPersonsReader
     {
         private readonly IEnumerable<Person> Persons = new[]
         {
