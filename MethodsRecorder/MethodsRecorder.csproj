@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.1" />
+    <PackageReference Include="CompareNETObjects" Version="4.73.0" />
   </ItemGroup>
 
 </Project>
