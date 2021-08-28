@@ -28,5 +28,10 @@ namespace MethodsRecorderTests.ExampleData.Persons
             return PersonsReader.ReadAllPersons()
                 .Where(x => x.Age >= 18);
         }
+
+        public int GetCount()
+        {
+            return PersonsReader.ReadAllPersons().Count();
+        }
     }
 }

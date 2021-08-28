@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using System.Text.Json;
 
 namespace MethodsRecorder.Writters
 {
@@ -7,39 +8,43 @@ namespace MethodsRecorder.Writters
     {
         private readonly string FilePath;
 
-        private int Id;
+        private int OrderNumber;
 
         public FileWritter(string filePath)
         {
             FilePath = filePath;
         }
 
-        public void Write(IDataToWrite data)
+        public void Write(MethodData data)
         {
-            if (Id == 0)
+            bool isFirst = OrderNumber == 0;
+
+            if (isFirst)
             {
                 DeleteFile();
-                Id = 1;
+                OrderNumber = 1;
             }
 
             using (var sw = new StreamWriter(FilePath, true, Encoding.UTF8))
             {
-                sw.WriteLine($"#METHOD_{Id} [{data.MethodName}]:");
-                sw.WriteLine(data.Header);
-                sw.WriteLine(data.Data);
-                sw.WriteLine();
-            }
-        }
+                data.OrderNumber = OrderNumber;
 
-        public void NextMethod()
-        {
-            Id++;
+                sw.Write(SerializeMethod(data));
+                sw.WriteLine(",");
+
+                OrderNumber++;
+            }
         }
 
         private void DeleteFile()
         {
             if(File.Exists(FilePath))
                 File.Delete(FilePath);
+        }
+
+        private string SerializeMethod<T>(T data)
+        {
+            return JsonSerializer.Serialize(data);
         }
     }
 }

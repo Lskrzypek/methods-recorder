@@ -14,12 +14,16 @@ namespace MethodsRecorder.RecordedObjectCreators
 
         public void Intercept(IInvocation invocation)
         {
-            Writter.Write(new MethodArgumentsData(invocation.Arguments, invocation.Method.Name));
-
             invocation.Proceed();
 
-            Writter.Write(new MethodReturnValueData(invocation.ReturnValue, invocation.Method.Name));
-            Writter.NextMethod();
+            var data = new MethodData()
+            {
+                Arguments = invocation.Arguments,
+                ReturnValue = invocation.ReturnValue,
+                MethodName = invocation.Method.Name
+            };
+
+            Writter.Write(data);
         }
     }
 }

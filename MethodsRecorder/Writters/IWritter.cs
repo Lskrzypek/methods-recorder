@@ -2,7 +2,6 @@
 {
     internal interface IWritter
     {
-        void Write(IDataToWrite data);
-        void NextMethod();
+        void Write(MethodData data);
     }
 }
