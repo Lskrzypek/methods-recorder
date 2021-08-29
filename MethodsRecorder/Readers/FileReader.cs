@@ -25,7 +25,10 @@ namespace MethodsRecorder.Readers
 
             var md = MethodsData
                 .Where(x => x.MethodName == methodName && AreArgumentsEquals(arguments, x.Arguments))
+                .OrderBy(x => x.OrderNumber)
                 .FirstOrDefault();
+
+            MethodsData.Remove(md);
 
             var returnValue = DeserializeObject(md.ReturnValue, returnType);
             return returnValue;

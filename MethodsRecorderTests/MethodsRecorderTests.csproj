@@ -22,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestFiles\accountValues.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestFiles\persons.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

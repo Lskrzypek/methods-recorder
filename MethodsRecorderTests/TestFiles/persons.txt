@@ -1,4 +1,4 @@
 ﻿{"OrderNumber":1,"MethodName":"GetOne","ReturnValue":{"FirstName":"Jan","LastName":"Kowalski","Age":25},"Arguments":["Jan","Kowalski"]},
 {"OrderNumber":2,"MethodName":"GetAllPersons","ReturnValue":[{"FirstName":"Jan","LastName":"Kowalski","Age":25},{"FirstName":"Marek","LastName":"Nowak","Age":30},{"FirstName":"Karolina","LastName":"Kaczmarek","Age":19},{"FirstName":"Micha\u0142","LastName":"Zmaczy\u0144ski","Age":14}],"Arguments":[]},
 {"OrderNumber":3,"MethodName":"GetCount","ReturnValue":4,"Arguments":[]},
-{"OrderNumber":4,"MethodName":"GetOne","ReturnValue":null,"Arguments":["Marian","Nowak"]},
+{"OrderNumber":4,"MethodName":"GetOne","ReturnValue":{"FirstName":"Marek","LastName":"Nowak","Age":30},"Arguments":["Marek","Nowak"]},
