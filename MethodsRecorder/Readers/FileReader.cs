@@ -18,13 +18,13 @@ namespace MethodsRecorder.Readers
             FilePath = filePath;
         }
 
-        public object ReadMethod(string methodName, object[] arguments, Type returnType)
+        public object ReadMethod(string className, string methodName, object[] arguments, Type returnType)
         {
             if (MethodsData == null)
                 ReadAllFileData();
 
             var md = MethodsData
-                .Where(x => x.MethodName == methodName && AreArgumentsEquals(arguments, x.Arguments))
+                .Where(x => x.MethodName == methodName && x.ClasName == className && AreArgumentsEquals(arguments, x.Arguments))
                 .OrderBy(x => x.OrderNumber)
                 .FirstOrDefault();
 

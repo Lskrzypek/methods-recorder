@@ -14,7 +14,11 @@ namespace MethodsRecorder.PlayingObjectCreators
 
         public void Intercept(IInvocation invocation)
         {
-            var returnValue = Reader.ReadMethod(invocation.Method.Name, invocation.Arguments, invocation.Method.ReturnType);
+            var returnValue = Reader.ReadMethod(
+                invocation.Method.DeclaringType.FullName, 
+                invocation.Method.Name, 
+                invocation.Arguments, 
+                invocation.Method.ReturnType);
             invocation.ReturnValue = returnValue;
         }
     }

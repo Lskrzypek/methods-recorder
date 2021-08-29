@@ -1,0 +1,4 @@
+﻿{"OrderNumber":1,"ClasName":"MethodsRecorderTests.ExampleData.Persons.IPersonsDao","MethodName":"GetOne","ReturnValue":{"FirstName":"Jan","LastName":"Kowalski","Age":25},"Arguments":["Jan","Kowalski"]},
+{"OrderNumber":2,"ClasName":"MethodsRecorderTests.ExampleData.Accounts.IAccountValuesDao","MethodName":"GetValue","ReturnValue":1000,"Arguments":["1-1234-5678-9012","2021-07-01T12:00:00"]},
+{"OrderNumber":3,"ClasName":"MethodsRecorderTests.ExampleData.Persons.IPersonsDao","MethodName":"GetOne","ReturnValue":{"FirstName":"Karolina","LastName":"Kaczmarek","Age":19},"Arguments":["Karolina","Kaczmarek"]},
+{"OrderNumber":4,"ClasName":"MethodsRecorderTests.ExampleData.Accounts.IAccountValuesDao","MethodName":"GetValue","ReturnValue":50000,"Arguments":["2-0000-1111-2222","2021-07-01T12:00:00"]},

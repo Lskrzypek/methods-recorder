@@ -6,5 +6,6 @@ namespace MethodsRecorderTests.ExampleData.Accounts
     {
         AccountValue Get(Account account, DateTime dateTime);
         AccountValue GetCurrent(string accountNum);
+        float GetValue(string accountNum, DateTime dateTime);
     }
 }

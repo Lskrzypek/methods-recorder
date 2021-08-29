@@ -28,5 +28,13 @@ namespace MethodsRecorderTests.ExampleData.Accounts
                 .ReadAllAccountValues()
                 .FirstOrDefault(x => x.AccountNum == account.AccountNumber && x.Date == dateTime);
         }
+
+        public float GetValue(string accountNum, DateTime dateTime)
+        {
+            return AccountValuesReader
+                .ReadAllAccountValues()
+                .FirstOrDefault(x => x.AccountNum == accountNum && x.Date == dateTime)?
+                .Value ?? 0f;
+        }
     }
 }

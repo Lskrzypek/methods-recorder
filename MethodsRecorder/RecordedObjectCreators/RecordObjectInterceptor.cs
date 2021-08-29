@@ -20,7 +20,8 @@ namespace MethodsRecorder.RecordedObjectCreators
             {
                 Arguments = invocation.Arguments,
                 ReturnValue = invocation.ReturnValue,
-                MethodName = invocation.Method.Name
+                MethodName = invocation.Method.Name,
+                ClasName = invocation.Method.DeclaringType.FullName
             };
 
             Writter.Write(data);

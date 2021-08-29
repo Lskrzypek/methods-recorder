@@ -3,6 +3,7 @@ using MethodsRecorder;
 using MethodsRecorderTests.ExampleData.Persons;
 using MethodsRecorderTests.ExampleData.Accounts;
 using System.Linq;
+using System;
 
 namespace MethodsRecorderTests
 {
@@ -62,11 +63,30 @@ namespace MethodsRecorderTests
             Assert.AreEqual(expectedValue2.Value, value2.Value);
         }
 
+        [TestMethod]
+        public void Example_Player_Two_classes()
+        {
+            var player = this.CreateTwoClassPlayer();
+
+            var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
+            var accountValuesPlayerDao = player.CreatePlayingObject<IAccountValuesDao>().Object;
+            var person1 = personsPlayerDao.GetOne("Jan", "Kowalski");
+            var accountValues1 = accountValuesPlayerDao.GetValue("1-1234-5678-9012", new DateTime(2021, 7, 1, 12, 0, 0));
+            var person2 = personsPlayerDao.GetOne("Karolina", "Kaczmarek");
+            var accountValues2 = accountValuesPlayerDao.GetValue("2-0000-1111-2222", new DateTime(2021, 7, 1, 12, 0, 0));
+
+            Assert.AreEqual("Kowalski", person1.LastName);
+            Assert.AreEqual(1000, accountValues1);
+            Assert.AreEqual("Kaczmarek", person2.LastName);
+            Assert.AreEqual(50000, accountValues2);
+        }
+
         private PersonsDao CreatePersonsDao() => new PersonsDao(new PersonsReader());
         private AccountValuesDao CreateAccountValuesDao() => new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
 
         private Player CreatePersonsPlayer() => new Player("TestFiles/persons.txt");
         private Player CreateAccountValuesPlayer() => new Player("TestFiles/accountValues.txt");
+        private Player CreateTwoClassPlayer() => new Player("TestFiles/twoClasses.txt");
 
 
     }
