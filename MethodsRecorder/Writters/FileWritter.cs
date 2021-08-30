@@ -1,21 +1,35 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace MethodsRecorder.Writters
 {
-    internal class FileWritter : IWritter
+    public class FileWritter : IWritter
     {
         private readonly string FilePath;
+        private readonly TaskQueue TaskQueue;
 
         private int OrderNumber;
 
         public FileWritter(string filePath)
         {
             FilePath = filePath;
+            TaskQueue = new TaskQueue();
         }
 
-        public void Write(MethodData data)
+        public void WaitToCompleteWrite()
+        {
+            TaskQueue.WaitForAllTasks().Wait();
+        }
+
+        public async void Write(MethodData data)
+        {
+            await TaskQueue.Enqueue(() => WriteToFile(data));
+        }
+
+        private async Task WriteToFile(MethodData data)
         {
             bool isFirst = OrderNumber == 0;
 
@@ -34,6 +48,8 @@ namespace MethodsRecorder.Writters
 
                 OrderNumber++;
             }
+
+            await Task.CompletedTask;
         }
 
         private void DeleteFile()

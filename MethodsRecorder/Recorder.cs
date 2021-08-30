@@ -1,6 +1,6 @@
 ﻿using System;
-using MethodsRecorder.Writters;
 using MethodsRecorder.RecordedObjectCreators;
+using MethodsRecorder.Writters;
 
 namespace MethodsRecorder
 {
@@ -9,9 +9,9 @@ namespace MethodsRecorder
         private readonly IWritter Writter;
         private readonly IRecordedObjectCreator RecordedObjectCreator;
 
-        public Recorder(string filePath) 
+        public Recorder(IWritter writter) 
         {
-            Writter = new FileWritter(filePath);
+            Writter = writter;
             RecordedObjectCreator = new RecordedObjectCreator(Writter);
         }
 

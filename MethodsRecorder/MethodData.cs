@@ -2,7 +2,7 @@
 
 namespace MethodsRecorder
 {
-    internal class MethodData
+    public class MethodData
     {
         public int OrderNumber { get; set; }
         public string ClasName { get; set; }

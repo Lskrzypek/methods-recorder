@@ -1,7 +1,8 @@
 ﻿namespace MethodsRecorder.Writters
 {
-    internal interface IWritter
+    public interface IWritter
     {
         void Write(MethodData data);
+        void WaitToCompleteWrite();
     }
 }

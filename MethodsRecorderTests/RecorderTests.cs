@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using MethodsRecorder.Writters;
 
 namespace MethodsRecorderTests
 {
@@ -27,7 +28,8 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_simple()
         {
-            var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            var recorder = new Recorder(writter);
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
@@ -38,12 +40,15 @@ namespace MethodsRecorderTests
             recordedPersonsDao.GetAllPersons();
             recordedPersonsDao.GetCount();
             recordedPersonsDao.GetOne("Marek", "Nowak");
+
+            writter.WaitToCompleteWrite();
         }
 
         [TestMethod]
         public void Example_Recorder_second_time_the_same_method_with_different_body()
         {
-            var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            var recorder = new Recorder(writter);
 
             var account1 = new Account()
             {
@@ -64,12 +69,15 @@ namespace MethodsRecorderTests
             recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
             recordedaccountsValuesDao.Get(account1, new DateTime(2021, 7, 1));
             recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
+
+            writter.WaitToCompleteWrite();
         }
 
         [TestMethod]
         public void Example_Recorder_two_classes()
         {
-            var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            var recorder = new Recorder(writter);
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
@@ -84,6 +92,8 @@ namespace MethodsRecorderTests
             var a = recordedaccountsValuesDao.GetValue("1-1234-5678-9012", new DateTime(2021, 7, 1, 12, 0, 0));
             recordedPersonsDao.GetOne("Karolina", "Kaczmarek");
             recordedaccountsValuesDao.GetValue("2-0000-1111-2222", new DateTime(2021, 7, 1, 12, 0, 0));
+
+            writter.WaitToCompleteWrite();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
