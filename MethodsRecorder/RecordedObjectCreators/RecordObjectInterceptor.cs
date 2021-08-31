@@ -5,11 +5,11 @@ namespace MethodsRecorder.RecordedObjectCreators
 {
     internal class RecordObjectInterceptor : IInterceptor
     {
-        private readonly IWritter Writter;
+        private readonly IWriteManager WriteManager;
 
-        public RecordObjectInterceptor(IWritter writter)
+        public RecordObjectInterceptor(IWriteManager writeManager)
         {
-            Writter = writter;
+            WriteManager = writeManager;
         }
 
         public void Intercept(IInvocation invocation)
@@ -21,10 +21,11 @@ namespace MethodsRecorder.RecordedObjectCreators
                 Arguments = invocation.Arguments,
                 ReturnValue = invocation.ReturnValue,
                 MethodName = invocation.Method.Name,
-                ClasName = invocation.Method.DeclaringType.FullName
+                ClasName = invocation.Method.DeclaringType.FullName,
+                OrderNumber = WriteManager.CurrentRecordNumber
             };
 
-            Writter.Write(data);
+            WriteManager.Write(data);
         }
     }
 }

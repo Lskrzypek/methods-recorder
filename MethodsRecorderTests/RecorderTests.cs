@@ -41,7 +41,7 @@ namespace MethodsRecorderTests
             recordedPersonsDao.GetCount();
             recordedPersonsDao.GetOne("Marek", "Nowak");
 
-            writter.WaitToCompleteWrite();
+            recorder.CompleteWrite();
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace MethodsRecorderTests
             recordedaccountsValuesDao.Get(account1, new DateTime(2021, 7, 1));
             recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
 
-            writter.WaitToCompleteWrite();
+            recorder.CompleteWrite();
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace MethodsRecorderTests
             recordedPersonsDao.GetOne("Karolina", "Kaczmarek");
             recordedaccountsValuesDao.GetValue("2-0000-1111-2222", new DateTime(2021, 7, 1, 12, 0, 0));
 
-            writter.WaitToCompleteWrite();
+            recorder.CompleteWrite();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
