@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace MethodsRecorder.Readers
 {
-    internal class FileReader : IReader
+    public class FileReader : IReader
     {
         private readonly string FilePath;
         private readonly ObjectComparator objectComparator = new ObjectComparator();

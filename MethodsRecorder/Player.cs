@@ -4,14 +4,14 @@ using MethodsRecorder.Readers;
 
 namespace MethodsRecorder
 {
-    public class Player
+    public class Player : IPlayer
     {
         private readonly IPlayingObjectCreator PlayingObjectCreator;
         private readonly IReader Reader;
 
-        public Player(string filePath)
+        public Player(IReader reader)
         {
-            Reader = new FileReader(filePath);
+            Reader = reader;
             PlayingObjectCreator = new PlayingObjectCreator(Reader);
         }
 

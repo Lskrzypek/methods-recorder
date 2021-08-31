@@ -4,6 +4,7 @@ using MethodsRecorderTests.ExampleData.Persons;
 using MethodsRecorderTests.ExampleData.Accounts;
 using System.Linq;
 using System;
+using MethodsRecorder.Readers;
 
 namespace MethodsRecorderTests
 {
@@ -84,9 +85,9 @@ namespace MethodsRecorderTests
         private PersonsDao CreatePersonsDao() => new PersonsDao(new PersonsReader());
         private AccountValuesDao CreateAccountValuesDao() => new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
 
-        private Player CreatePersonsPlayer() => new Player("TestFiles/persons.txt");
-        private Player CreateAccountValuesPlayer() => new Player("TestFiles/accountValues.txt");
-        private Player CreateTwoClassPlayer() => new Player("TestFiles/twoClasses.txt");
+        private Player CreatePersonsPlayer() => new Player(new FileReader("TestFiles/persons.txt"));
+        private Player CreateAccountValuesPlayer() => new Player(new FileReader("TestFiles/accountValues.txt"));
+        private Player CreateTwoClassPlayer() => new Player(new FileReader("TestFiles/twoClasses.txt"));
 
 
     }

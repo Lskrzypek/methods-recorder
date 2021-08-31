@@ -1,6 +1,6 @@
 ﻿namespace MethodsRecorder.Readers
 {
-    internal interface IReader
+    public interface IReader
     {
         object ReadMethod(ReaderInputData inputData);
     }
