@@ -18,19 +18,19 @@ namespace MethodsRecorder.Readers
             FilePath = filePath;
         }
 
-        public object ReadMethod(string className, string methodName, object[] arguments, Type returnType)
+        public object ReadMethod(ReaderInputData inputData)
         {
             if (MethodsData == null)
                 ReadAllFileData();
 
             var md = MethodsData
-                .Where(x => x.MethodName == methodName && x.ClasName == className && AreArgumentsEquals(arguments, x.Arguments))
+                .Where(x => x.MethodName == inputData.MethodName && x.ClasName == inputData.ClassName && AreArgumentsEquals(inputData.Arguments, x.Arguments))
                 .OrderBy(x => x.OrderNumber)
                 .FirstOrDefault();
 
             MethodsData.Remove(md);
 
-            var returnValue = DeserializeObject(md.ReturnValue, returnType);
+            var returnValue = DeserializeObject(md.ReturnValue, inputData.ReturnType);
             return returnValue;
         }
 
