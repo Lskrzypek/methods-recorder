@@ -22,11 +22,9 @@ namespace MethodsRecorder.Writters
                 DeleteFile();
             }
 
-            using (var sw = new StreamWriter(FilePath, true, Encoding.UTF8))
-            {
-                sw.Write(SerializeMethod(data));
-                sw.WriteLine(",");
-            }
+            using var sw = new StreamWriter(FilePath, true, Encoding.UTF8);
+            sw.Write(SerializeMethod(data));
+            sw.WriteLine(",");
         }
 
         private void DeleteFile()
@@ -35,7 +33,7 @@ namespace MethodsRecorder.Writters
                 File.Delete(FilePath);
         }
 
-        private string SerializeMethod<T>(T data)
+        private static string SerializeMethod<T>(T data)
         {
             return JsonSerializer.Serialize(data);
         }

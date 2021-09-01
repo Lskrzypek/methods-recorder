@@ -6,7 +6,7 @@ namespace MethodsRecorder.RecordedObjectCreators
     internal class RecordedObjectCreator : IRecordedObjectCreator
     {
         private readonly IWriteManager WriteManager;
-        private readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
+        private readonly ProxyGenerator ProxyGenerator = new();
 
         public RecordedObjectCreator(IWriteManager writeManager)
         {

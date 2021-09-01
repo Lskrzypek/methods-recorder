@@ -26,12 +26,9 @@ namespace MethodsRecorder.Writters
             TaskQueue.WaitForAllTasks().Wait();
         }
 
-
         private async Task DoWrite(MethodData data)
         {
-            await Task.Delay(500);
             Writter.Write(data);
-            await Task.Delay(500);
 
             await Task.CompletedTask;
         }

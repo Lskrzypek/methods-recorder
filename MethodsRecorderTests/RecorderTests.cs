@@ -93,7 +93,7 @@ namespace MethodsRecorderTests
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public string GetCurrentMethod()
+        public static string GetCurrentMethod()
         {
             var st = new StackTrace();
             var sf = st.GetFrame(1);

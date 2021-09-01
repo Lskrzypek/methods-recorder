@@ -7,20 +7,20 @@ namespace MethodsRecorder.Writters
 {
     internal class TaskQueue
     {
-        private SemaphoreSlim semaphore;
-        private List<Guid> taskGuids = new List<Guid>();
+        private readonly SemaphoreSlim Semaphore;
+        private readonly List<Guid> TaskGuids = new ();
 
         public TaskQueue()
         {
-            semaphore = new SemaphoreSlim(1);
+            Semaphore = new SemaphoreSlim(1);
         }
 
         public async Task<T> Enqueue<T>(Func<Task<T>> task)
         {
             var guid = Guid.NewGuid();
-            taskGuids.Add(guid);
+            TaskGuids.Add(guid);
 
-            await semaphore.WaitAsync();
+            await Semaphore.WaitAsync();
 
             try
             {
@@ -28,17 +28,17 @@ namespace MethodsRecorder.Writters
             }
             finally
             {
-                taskGuids.Remove(guid);
-                semaphore.Release();
+                TaskGuids.Remove(guid);
+                Semaphore.Release();
             }
         }
 
         public async Task Enqueue(Func<Task> task)
         {
             var guid = Guid.NewGuid();
-            taskGuids.Add(guid);
+            TaskGuids.Add(guid);
 
-            await semaphore.WaitAsync();
+            await Semaphore.WaitAsync();
 
             try
             {
@@ -46,8 +46,8 @@ namespace MethodsRecorder.Writters
             }
             finally
             {
-                taskGuids.Remove(guid);
-                semaphore.Release();
+                TaskGuids.Remove(guid);
+                Semaphore.Release();
             }
         }
 
@@ -57,16 +57,16 @@ namespace MethodsRecorder.Writters
             {
                 try
                 {
-                    await semaphore.WaitAsync();
+                    await Semaphore.WaitAsync();
 
-                    if (taskGuids.Count == 0)
+                    if (TaskGuids.Count == 0)
                         break;
 
                     await Task.Delay(1);
                 }
                 finally
                 {
-                    semaphore.Release();
+                    Semaphore.Release();
                 }
             }
         }

@@ -5,7 +5,7 @@ namespace MethodsRecorder.PlayingObjectCreators
 {
     internal class PlayingObjectCreator : IPlayingObjectCreator
     {
-        private readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
+        private readonly ProxyGenerator ProxyGenerator = new();
         private readonly IReader Reader;
 
         public PlayingObjectCreator(IReader reader)

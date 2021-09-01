@@ -14,36 +14,36 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Player_Method_without_parameter_and_simple_return_type()
         {
-            var player = this.CreatePersonsPlayer();
+            var player = CreatePersonsPlayer();
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var count = personsPlayerDao.GetCount();
 
-            var expectedCount = this.CreatePersonsDao().GetCount();
+            var expectedCount = CreatePersonsDao().GetCount();
             Assert.AreEqual(expectedCount, count);
         }
 
         [TestMethod]
         public void Example_Player_Method_without_parameter_and_complex_return_type()
         {
-            var player = this.CreatePersonsPlayer();
+            var player = CreatePersonsPlayer();
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var persons = personsPlayerDao.GetAllPersons();
 
-            var expectedPersons = this.CreatePersonsDao().GetAllPersons();
+            var expectedPersons = CreatePersonsDao().GetAllPersons();
             Assert.AreEqual(expectedPersons.Count(), persons.Count());
         }
 
         [TestMethod]
         public void Example_Player_Method_with_parameters_and_complex_return_type()
         {
-            var player = this.CreatePersonsPlayer();
+            var player = CreatePersonsPlayer();
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var person = personsPlayerDao.GetOne("Jan", "Kowalski");
 
-            var expectedPerson = this.CreatePersonsDao().GetOne("Jan", "Kowalski");
+            var expectedPerson = CreatePersonsDao().GetOne("Jan", "Kowalski");
             Assert.AreEqual(expectedPerson.LastName, person.LastName);
         }
 
@@ -51,13 +51,13 @@ namespace MethodsRecorderTests
         public void Example_Player_Method_double_called_with_other_body()
         {
             var accountNum = "1-1234-5678-9012";
-            var player = this.CreateAccountValuesPlayer();
+            var player = CreateAccountValuesPlayer();
 
             var accountValuesPlayerDao = player.CreatePlayingObject<IAccountValuesDao>().Object;
             var value1 = accountValuesPlayerDao.GetCurrent(accountNum);
             var value2 = accountValuesPlayerDao.GetCurrent(accountNum);
 
-            var expectedDao = this.CreateAccountValuesDao();
+            var expectedDao = CreateAccountValuesDao();
             var expectedValue1 = expectedDao.GetCurrent(accountNum);
             var expectedValue2 = expectedDao.GetCurrent(accountNum);
             Assert.AreEqual(expectedValue1.Value, value1.Value);
@@ -67,7 +67,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Player_Two_classes()
         {
-            var player = this.CreateTwoClassPlayer();
+            var player = CreateTwoClassPlayer();
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var accountValuesPlayerDao = player.CreatePlayingObject<IAccountValuesDao>().Object;
@@ -82,13 +82,12 @@ namespace MethodsRecorderTests
             Assert.AreEqual(50000, accountValues2);
         }
 
-        private PersonsDao CreatePersonsDao() => new PersonsDao(new PersonsReader());
-        private AccountValuesDao CreateAccountValuesDao() => new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
+        private static PersonsDao CreatePersonsDao() => new (new PersonsReader());
+        private static AccountValuesDao CreateAccountValuesDao() => new (new AccountValuesReader(), new CurrentTime());
 
-        private Player CreatePersonsPlayer() => new Player(new FileReader("TestFiles/persons.txt"));
-        private Player CreateAccountValuesPlayer() => new Player(new FileReader("TestFiles/accountValues.txt"));
-        private Player CreateTwoClassPlayer() => new Player(new FileReader("TestFiles/twoClasses.txt"));
-
+        private static Player CreatePersonsPlayer() => new (new FileReader("TestFiles/persons.txt"));
+        private static Player CreateAccountValuesPlayer() => new (new FileReader("TestFiles/accountValues.txt"));
+        private static Player CreateTwoClassPlayer() => new (new FileReader("TestFiles/twoClasses.txt"));
 
     }
 }

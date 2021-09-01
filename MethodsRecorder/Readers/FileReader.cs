@@ -10,7 +10,7 @@ namespace MethodsRecorder.Readers
     public class FileReader : IReader
     {
         private readonly string FilePath;
-        private readonly ObjectComparator objectComparator = new ObjectComparator();
+        private readonly ObjectComparator objectComparator = new();
         private List<MethodData> MethodsData;
 
         public FileReader(string filePath)
@@ -36,16 +36,17 @@ namespace MethodsRecorder.Readers
 
         private void ReadAllFileData()
         {
+            string fileStr;
             using (var sr = new StreamReader(FilePath, Encoding.UTF8))
             {
-                var fileStr = sr.ReadToEnd();
-                MethodsData = ParseTextToMethodsData(fileStr).ToList();
+                fileStr = sr.ReadToEnd();
             }
+            MethodsData = ParseTextToMethodsData(fileStr).ToList();
         }
 
-        private IEnumerable<MethodData> ParseTextToMethodsData(string text)
+        private static IEnumerable<MethodData> ParseTextToMethodsData(string text)
         {
-            var textToDeserialize = "[" + text.Substring(0, text.Length - 3) + "]";
+            var textToDeserialize = "[" + text[0..^3] + "]";
             var methodsList = JsonSerializer.Deserialize<IEnumerable<MethodData>>(textToDeserialize);
             return methodsList;
         }
@@ -67,7 +68,7 @@ namespace MethodsRecorder.Readers
                 .Any(x => !objectComparator.Compare(x.x, fileDeserializedArguments[x.index]));
         }
 
-        private object DeserializeObject(object obj, Type expectedType)
+        private static object DeserializeObject(object obj, Type expectedType)
         {
             var jsonElement = (JsonElement)obj;
             return JsonSerializer.Deserialize(jsonElement.GetRawText(), expectedType);
