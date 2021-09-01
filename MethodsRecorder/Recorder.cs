@@ -11,8 +11,7 @@ namespace MethodsRecorder
         private readonly IWritter Writter;
         private readonly IRecordedObjectCreator RecordedObjectCreator;
         private readonly IWriteManager WriteManager;
-
-        private bool isCompleted = false;
+        private bool _disposed = false;
 
         public Recorder(IWritter writter, bool isAsync = false)
         {
@@ -31,18 +30,26 @@ namespace MethodsRecorder
                 throw new ArgumentException("The recorded type must be an interface.");
             }
 
-            if (isCompleted)
-            {
-                throw new Exception("The recording is completed.");
-            }
-
             return RecordedObjectCreator.Create(instance);
         }
 
-        public void CompleteWrite()
+        #region Dispose
+        public void Dispose() => Dispose(true);
+
+        protected virtual void Dispose(bool disposing)
         {
-            WriteManager.CompleteWrite();
-            isCompleted = true;
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                WriteManager.CompleteWrite();
+            }
+
+            _disposed = true;
         }
+        #endregion
     }
 }

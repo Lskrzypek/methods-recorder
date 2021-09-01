@@ -29,7 +29,7 @@ namespace MethodsRecorderTests
         public void Example_Recorder_simple()
         {
             IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            var recorder = new Recorder(writter);
+            using var recorder = new Recorder(writter, true);
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
@@ -40,15 +40,13 @@ namespace MethodsRecorderTests
             recordedPersonsDao.GetAllPersons();
             recordedPersonsDao.GetCount();
             recordedPersonsDao.GetOne("Marek", "Nowak");
-
-            recorder.CompleteWrite();
         }
 
         [TestMethod]
         public void Example_Recorder_second_time_the_same_method_with_different_body()
         {
             IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            var recorder = new Recorder(writter);
+            using var recorder = new Recorder(writter);
 
             var account1 = new Account()
             {
@@ -70,14 +68,13 @@ namespace MethodsRecorderTests
             recordedaccountsValuesDao.Get(account1, new DateTime(2021, 7, 1));
             recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
 
-            recorder.CompleteWrite();
         }
 
         [TestMethod]
         public void Example_Recorder_two_classes()
         {
             IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            var recorder = new Recorder(writter);
+            using var recorder = new Recorder(writter);
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
@@ -93,7 +90,6 @@ namespace MethodsRecorderTests
             recordedPersonsDao.GetOne("Karolina", "Kaczmarek");
             recordedaccountsValuesDao.GetValue("2-0000-1111-2222", new DateTime(2021, 7, 1, 12, 0, 0));
 
-            recorder.CompleteWrite();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

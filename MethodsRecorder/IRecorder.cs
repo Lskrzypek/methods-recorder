@@ -1,10 +1,11 @@
-﻿namespace MethodsRecorder
+﻿using System;
+
+namespace MethodsRecorder
 {
-    public interface IRecorder
+    public interface IRecorder : IDisposable
     {
         bool IsAsync { get; }
 
-        void CompleteWrite();
         RecordedObject<TInterface> CreateRecordedObject<TInterface>(TInterface instance) where TInterface : class;
     }
 }

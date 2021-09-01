@@ -13,8 +13,8 @@
 
         public void Write(MethodData data)
         {
-            Writter.Write(data);
             CurrentRecordNumber++;
+            Writter.Write(data);
         }
 
         public void CompleteWrite()

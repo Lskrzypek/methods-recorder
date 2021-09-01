@@ -17,6 +17,7 @@ namespace MethodsRecorder.Writters
 
         public async void Write(MethodData data)
         {
+            CurrentRecordNumber++;
             await TaskQueue.Enqueue(() => DoWrite(data));
         }
 
@@ -28,9 +29,10 @@ namespace MethodsRecorder.Writters
 
         private async Task DoWrite(MethodData data)
         {
+            await Task.Delay(500);
             Writter.Write(data);
+            await Task.Delay(500);
 
-            CurrentRecordNumber++;
             await Task.CompletedTask;
         }
     }
