@@ -29,8 +29,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_simple()
         {
-            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            using var recorder = new Recorder(writter);
+            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
@@ -46,8 +45,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_simple_async()
         {
-            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            using var recorder = new Recorder(writter, true);
+            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
@@ -63,8 +61,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_second_time_the_same_method_with_different_body()
         {
-            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            using var recorder = new Recorder(writter);
+            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
 
             var account1 = new Account()
             {
@@ -91,8 +88,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_two_classes()
         {
-            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            using var recorder = new Recorder(writter);
+            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
@@ -112,8 +108,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_constraint()
         {
-            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            using var recorder = new Recorder(writter);
+            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder

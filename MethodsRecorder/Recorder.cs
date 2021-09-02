@@ -13,6 +13,15 @@ namespace MethodsRecorder
         private readonly IWriteManager WriteManager;
         private bool _disposed = false;
 
+        public Recorder(string filePath, bool isAsync = false)
+        {
+            Writter = new FileWritter(filePath);
+            IsAsync = isAsync;
+
+            WriteManager = new WriteManagerFactory(Writter).Create(isAsync);
+            RecordedObjectCreator = new RecordedObjectCreator(WriteManager);
+        }
+
         public Recorder(IWritter writter, bool isAsync = false)
         {
             Writter = writter;

@@ -1,6 +1,6 @@
 ﻿namespace MethodsRecorder.Writters
 {
-    public class WriteManager : IWriteManager
+    internal class WriteManager : IWriteManager
     {
         public int CurrentRecordNumber { get; private set; }
 

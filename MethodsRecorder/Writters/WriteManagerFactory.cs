@@ -1,6 +1,6 @@
 ﻿namespace MethodsRecorder.Writters
 {
-    public class WriteManagerFactory
+    internal class WriteManagerFactory
     {
         private readonly IWritter Writter;
 

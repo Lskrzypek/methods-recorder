@@ -1,6 +1,6 @@
 ﻿namespace MethodsRecorder.Writters
 {
-    public interface IWriteManager
+    internal interface IWriteManager
     {
         int CurrentRecordNumber { get; }
 
