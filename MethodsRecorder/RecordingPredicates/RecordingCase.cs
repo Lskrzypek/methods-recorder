@@ -6,40 +6,42 @@ namespace MethodsRecorder.RecordingPredicates
 {
     public class RecordingCase
     {
-        private readonly MethodInfo MethodInfo;
+        private readonly MethodInformations MethodInformations;
 
-        public RecordingCase(MethodInfo methodInfo)
+        public RecordingCase(MethodInformations methodInformations)
         {
-            MethodInfo = methodInfo;
+            MethodInformations = methodInformations;
         }
 
         public bool AllMethods()
         {
-            return MethodInfo != null;
+            return MethodInformations?.ReflectionMethodInfo is not null;
         }
 
         public RecordingMethodCase Methods(params string[] methods)
         {
-            if (MethodInfo is null)
+            if (MethodInformations is null)
                 return new RecordingMethodCase(false, null);
 
-            var isCorrect = methods.Contains(MethodInfo.Name);
+            var isCorrect = methods.Contains(MethodInformations.MethodName);
 
-            return new RecordingMethodCase(isCorrect, MethodInfo);
+            return new RecordingMethodCase(isCorrect, MethodInformations);
         }
 
         public RecordingMethodCase Methods(Func<RecordingMethodAttributes, bool> predicate)
         {
-            if (MethodInfo is null)
+            if (MethodInformations?.ReflectionMethodInfo is null)
                 return new RecordingMethodCase(false, null);
+
+            var methodInfo = MethodInformations.ReflectionMethodInfo;
 
             var isCorrect = predicate(new RecordingMethodAttributes()
             {
-                Accessibility = MethodInfo.GetMethodAccessibility(),
-                ReturnType = MethodInfo.ReturnType
+                Accessibility = methodInfo.GetMethodAccessibility(),
+                ReturnType = methodInfo.ReturnType
             });
 
-            return new RecordingMethodCase(isCorrect, MethodInfo);
+            return new RecordingMethodCase(isCorrect, MethodInformations);
         }
     }
 }

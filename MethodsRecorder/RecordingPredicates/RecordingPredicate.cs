@@ -14,9 +14,9 @@ namespace MethodsRecorder.RecordingPredicates
             RecordElements = recordElements;
         }
 
-        public bool Check(MethodInfo methodInfo)
+        public bool Check(MethodInformations methodInformations)
         {
-            return Predicate(new RecordingCase(methodInfo));
+            return Predicate(new RecordingCase(methodInformations));
         }
     }
 }

@@ -1,27 +1,29 @@
 ﻿using System;
-using System.Reflection;
 using System.Linq;
 
 namespace MethodsRecorder.RecordingPredicates
 {
     public class RecordingMethodCase
     {
-        private readonly MethodInfo MethodInfo;
+        private readonly MethodInformations MethodInformations;
         private bool CurrentValue;
 
-        public RecordingMethodCase(bool beginValue, MethodInfo methodInfo)
+        public RecordingMethodCase(bool beginValue, MethodInformations methodInformations)
         {
             CurrentValue = beginValue;
-            MethodInfo = methodInfo;
+            MethodInformations = methodInformations;
         }
 
         public RecordingMethodCase WithParameters(params string[] parameters)
         {
-            if (MethodInfo is null)
+            if (MethodInformations.ReflectionMethodInfo is null)
+            {
+                CurrentValue = false;
                 return this;
+            }
 
             bool isCorrect = true;
-            var miParameters = MethodInfo.GetParameters();
+            var miParameters = MethodInformations.ReflectionMethodInfo.GetParameters();
 
             if (parameters.Length != miParameters.Length)
                 isCorrect = false;
@@ -40,7 +42,18 @@ namespace MethodsRecorder.RecordingPredicates
 
         public RecordingMethodCase WithParameterValue(string parameterName, Func<object, bool> predicate)
         {
-            throw new NotImplementedException();
+            var argument = MethodInformations.Arguments?.FirstOrDefault(x => x.Name == parameterName);
+            if(argument is null)
+            {
+                CurrentValue = false;
+                return this;
+            }
+
+            var isCorrect = predicate(argument.Value);
+
+            CurrentValue &= isCorrect;
+
+            return this;
         }
 
         public static implicit operator bool(RecordingMethodCase mc) => mc.CurrentValue;

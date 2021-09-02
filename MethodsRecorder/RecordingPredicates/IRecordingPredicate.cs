@@ -4,7 +4,7 @@ namespace MethodsRecorder.RecordingPredicates
 {
     internal interface IRecordingPredicate
     {
-        bool Check(MethodInfo methodInfo);
+        bool Check(MethodInformations methodInformations);
         RecordElements RecordElements { get; }
     }
 }
