@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using MethodsRecorder.Writters;
+using MethodsRecorder.RecordingPredicates;
 
 namespace MethodsRecorderTests
 {
@@ -29,13 +30,30 @@ namespace MethodsRecorderTests
         public void Example_Recorder_simple()
         {
             IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-            using var recorder = new Recorder(writter, true);
+            using var recorder = new Recorder(writter);
 
             var personsDao = new PersonsDao(new PersonsReader());
             var recordedPersonsDao = recorder
                 .CreateRecordedObject<IPersonsDao>(personsDao)
                 .Object;
             
+            recordedPersonsDao.GetOne("Jan", "Kowalski");
+            recordedPersonsDao.GetAllPersons();
+            recordedPersonsDao.GetCount();
+            recordedPersonsDao.GetOne("Marek", "Nowak");
+        }
+
+        [TestMethod]
+        public void Example_Recorder_simple_async()
+        {
+            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            using var recorder = new Recorder(writter, true);
+
+            var personsDao = new PersonsDao(new PersonsReader());
+            var recordedPersonsDao = recorder
+                .CreateRecordedObject<IPersonsDao>(personsDao)
+                .Object;
+
             recordedPersonsDao.GetOne("Jan", "Kowalski");
             recordedPersonsDao.GetAllPersons();
             recordedPersonsDao.GetCount();
@@ -89,7 +107,28 @@ namespace MethodsRecorderTests
             var a = recordedaccountsValuesDao.GetValue("1-1234-5678-9012", new DateTime(2021, 7, 1, 12, 0, 0));
             recordedPersonsDao.GetOne("Karolina", "Kaczmarek");
             recordedaccountsValuesDao.GetValue("2-0000-1111-2222", new DateTime(2021, 7, 1, 12, 0, 0));
+        }
 
+        [TestMethod]
+        public void Example_Recorder_constraint()
+        {
+            IWritter writter = new FileWritter(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
+            using var recorder = new Recorder(writter);
+
+            var personsDao = new PersonsDao(new PersonsReader());
+            var recordedPersonsDao = recorder
+                .CreateRecordedObject<IPersonsDao>(personsDao)
+                .Record(x => x.Methods("GetOne"), RecordElements.Arguments)
+                //.Record(x => x.Methods("GetOne", "GetAllPersons"), RecordElements.All)
+                //.Record(x => x.Methods(m => m.Accessibility == MethodAccessibility.Public && m.ReturnType == typeof(int)), RecordElements.ReturnValue)
+                //.Record(x => x.Methods("GetOne").WithParameters("parmA"))
+                //.Record(x => x.Methods("GetOne").WithParameterValue("ParameterName", val => val.ToString() == "test"))
+                .Object;
+
+            recordedPersonsDao.GetOne("Jan", "Kowalski");
+            recordedPersonsDao.GetAllPersons();
+            recordedPersonsDao.GetCount();
+            recordedPersonsDao.GetOne("Marek", "Nowak");
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

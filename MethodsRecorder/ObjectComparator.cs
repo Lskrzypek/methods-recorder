@@ -4,7 +4,7 @@ namespace MethodsRecorder
 {
     internal class ObjectComparator
     {
-        private readonly CompareLogic CompareLogic = new CompareLogic();
+        private readonly CompareLogic CompareLogic = new ();
 
         public bool Compare(object a, object b)
         {

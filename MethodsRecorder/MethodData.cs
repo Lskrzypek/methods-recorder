@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace MethodsRecorder
+﻿namespace MethodsRecorder
 {
     public class MethodData
     {

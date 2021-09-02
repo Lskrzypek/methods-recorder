@@ -16,9 +16,13 @@ namespace MethodsRecorder.RecordedObjectCreators
         public RecordedObject<TInterface> Create<TInterface>(TInterface instance)
             where TInterface : class
         {
-            var proxyObject = ProxyGenerator.CreateInterfaceProxyWithTarget(instance, new RecordObjectInterceptor(WriteManager));
+            IInterceptor interceptor = new RecordObjectInterceptor(WriteManager);
+            var proxyObject = ProxyGenerator.CreateInterfaceProxyWithTarget(instance, interceptor);
 
-            return new RecordedObject<TInterface>(obj: proxyObject, orginalObject: instance);
+            return new RecordedObject<TInterface>(
+                obj: proxyObject, 
+                orginalObject: instance,
+                interceptor: interceptor as IRecordObjectInterceptor);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MethodsRecorder.RecordedObjectCreators;
+using MethodsRecorder.RecordingPredicates;
+using System;
 
 namespace MethodsRecorder
 {
@@ -7,25 +9,19 @@ namespace MethodsRecorder
         public T Object { get; }
         public T OrginalObject { get; }
 
-        public RecordedObject(T obj, T orginalObject)
+        private readonly IRecordObjectInterceptor Interceptor;
+
+        internal RecordedObject(T obj, T orginalObject, IRecordObjectInterceptor interceptor)
         {
             Object = obj;
             OrginalObject = orginalObject;
+            Interceptor = interceptor;
         }
 
-        public RecordedObject<T> RecordWhen(Func<Method, bool> predicate)
+        public RecordedObject<T> Record(Func<RecordingCase, bool> predicate, RecordElements recordElements = RecordElements.All)
         {
-            throw new NotImplementedException();
-        }
-
-        public RecordedObject<T> RecordAlways()
-        {
-            throw new NotImplementedException();
-        }
-
-        public RecordedObject<T> SetupMethod(string methodName, Action<RecordedMethodParameters> parameters)
-        {
-            throw new NotImplementedException();
+            Interceptor.Constraints.Add(new RecordingPredicate(predicate, recordElements));
+            return this;
         }
     }
 }

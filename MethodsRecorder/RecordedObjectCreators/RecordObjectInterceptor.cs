@@ -1,10 +1,15 @@
 ﻿using Castle.DynamicProxy;
+using MethodsRecorder.RecordingPredicates;
 using MethodsRecorder.Writters;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MethodsRecorder.RecordedObjectCreators
 {
-    internal class RecordObjectInterceptor : IInterceptor
+    internal class RecordObjectInterceptor : IInterceptor, IRecordObjectInterceptor
     {
+        public List<IRecordingPredicate> Constraints { get; set; } = new ();
+
         private readonly IWriteManager WriteManager;
 
         public RecordObjectInterceptor(IWriteManager writeManager)
@@ -16,16 +21,52 @@ namespace MethodsRecorder.RecordedObjectCreators
         {
             invocation.Proceed();
 
+            var methodConstraints = GetConstraints(invocation);
+            if (!methodConstraints.Any() && Constraints.Any())
+                return;
+
+            var recordElements = GetRecordElements(methodConstraints);
+
             var data = new MethodData()
             {
-                Arguments = invocation.Arguments,
-                ReturnValue = invocation.ReturnValue,
                 MethodName = invocation.Method.Name,
                 ClasName = invocation.Method.DeclaringType.FullName,
                 OrderNumber = WriteManager.CurrentRecordNumber
             };
 
+            if (CheckRecordArguments(recordElements))
+            {
+                data.Arguments = invocation.Arguments;
+            }
+
+            if(CheckRecordReturnValue(recordElements))
+            {
+                data.ReturnValue = invocation.ReturnValue;
+            }
+            
             WriteManager.Write(data);
+        }
+
+        private IEnumerable<IRecordingPredicate> GetConstraints(IInvocation invocation)
+        {
+            return Constraints.Where(x => x.Check(invocation.Method));
+        }
+
+        private static RecordElements GetRecordElements(IEnumerable<IRecordingPredicate> predicates)
+        {
+            RecordElements ret = RecordElements.Nothing;
+            predicates.ToList().ForEach(x => { ret |= x.RecordElements; });
+            return ret;
+        }
+
+        private static bool CheckRecordArguments(RecordElements recordElements)
+        {
+            return recordElements.HasFlag(RecordElements.Arguments);
+        }
+
+        private static bool CheckRecordReturnValue(RecordElements recordElements)
+        {
+            return recordElements.HasFlag(RecordElements.ReturnValue);
         }
     }
 }
