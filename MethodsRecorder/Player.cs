@@ -9,6 +9,12 @@ namespace MethodsRecorder
         private readonly IPlayingObjectCreator PlayingObjectCreator;
         private readonly IReader Reader;
 
+        public Player(string filePath)
+        {
+            Reader = new FileReader(filePath);
+            PlayingObjectCreator = new PlayingObjectCreator(Reader);
+        }
+
         public Player(IReader reader)
         {
             Reader = reader;

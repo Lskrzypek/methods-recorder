@@ -4,17 +4,20 @@ using MethodsRecorderTests.ExampleData.Persons;
 using MethodsRecorderTests.ExampleData.Accounts;
 using System.Linq;
 using System;
-using MethodsRecorder.Readers;
 
 namespace MethodsRecorderTests
 {
     [TestClass]
     public class PlayerTests
     {
+        private const string PersonsFile = "TestFiles/persons.txt";
+        private const string AccountValuesFile = "TestFiles/accountValues.txt";
+        private const string TwoClassesFile = "TestFiles/twoClasses.txt";
+
         [TestMethod]
         public void Example_Player_Method_without_parameter_and_simple_return_type()
         {
-            var player = CreatePersonsPlayer();
+            var player = new Player(PersonsFile);
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var count = personsPlayerDao.GetCount();
@@ -26,7 +29,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Player_Method_without_parameter_and_complex_return_type()
         {
-            var player = CreatePersonsPlayer();
+            var player = new Player(PersonsFile);
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var persons = personsPlayerDao.GetAllPersons();
@@ -38,7 +41,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Player_Method_with_parameters_and_complex_return_type()
         {
-            var player = CreatePersonsPlayer();
+            var player = new Player(PersonsFile);
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var person = personsPlayerDao.GetOne("Jan", "Kowalski");
@@ -51,7 +54,7 @@ namespace MethodsRecorderTests
         public void Example_Player_Method_double_called_with_other_body()
         {
             var accountNum = "1-1234-5678-9012";
-            var player = CreateAccountValuesPlayer();
+            var player = new Player(AccountValuesFile);
 
             var accountValuesPlayerDao = player.CreatePlayingObject<IAccountValuesDao>().Object;
             var value1 = accountValuesPlayerDao.GetCurrent(accountNum);
@@ -67,7 +70,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Player_Two_classes()
         {
-            var player = CreateTwoClassPlayer();
+            var player = new Player(TwoClassesFile);
 
             var personsPlayerDao = player.CreatePlayingObject<IPersonsDao>().Object;
             var accountValuesPlayerDao = player.CreatePlayingObject<IAccountValuesDao>().Object;
@@ -82,12 +85,7 @@ namespace MethodsRecorderTests
             Assert.AreEqual(50000, accountValues2);
         }
 
-        private static PersonsDao CreatePersonsDao() => new (new PersonsReader());
-        private static AccountValuesDao CreateAccountValuesDao() => new (new AccountValuesReader(), new CurrentTime());
-
-        private static Player CreatePersonsPlayer() => new (new FileReader("TestFiles/persons.txt"));
-        private static Player CreateAccountValuesPlayer() => new (new FileReader("TestFiles/accountValues.txt"));
-        private static Player CreateTwoClassPlayer() => new (new FileReader("TestFiles/twoClasses.txt"));
-
+        private static PersonsDao CreatePersonsDao() => new(new PersonsReader());
+        private static AccountValuesDao CreateAccountValuesDao() => new(new AccountValuesReader(), new CurrentTime());
     }
 }

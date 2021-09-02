@@ -4,16 +4,16 @@ using MethodsRecorderTests.ExampleData.Persons;
 using MethodsRecorderTests.ExampleData.Accounts;
 using System;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using MethodsRecorder.Writters;
 using MethodsRecorder.RecordingPredicates;
+using System.Linq;
 
 namespace MethodsRecorderTests
 {
     [TestClass]
     public class RecorderTests
     {
+        public TestContext TestContext { get; set; }
+
         private readonly string resultsFolder = "TestResults";
         private readonly string fileExtension = ".txt";
 
@@ -29,40 +29,56 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_simple()
         {
-            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-
+            var fileName = DeleteOldTestFile();
             var personsDao = new PersonsDao(new PersonsReader());
-            var recordedPersonsDao = recorder
-                .CreateRecordedObject<IPersonsDao>(personsDao)
-                .Object;
-            
-            recordedPersonsDao.GetOne("Jan", "Kowalski");
-            recordedPersonsDao.GetAllPersons();
-            recordedPersonsDao.GetCount();
-            recordedPersonsDao.GetOne("Marek", "Nowak");
+
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
+                recordedPersonsDao.GetCount();
+            }
+
+            AssertFileHasLines(fileName, 1);
         }
 
         [TestMethod]
         public void Example_Recorder_simple_async()
         {
-            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-
+            var fileName = DeleteOldTestFile();
             var personsDao = new PersonsDao(new PersonsReader());
-            var recordedPersonsDao = recorder
-                .CreateRecordedObject<IPersonsDao>(personsDao)
-                .Object;
 
-            recordedPersonsDao.GetOne("Jan", "Kowalski");
-            recordedPersonsDao.GetAllPersons();
-            recordedPersonsDao.GetCount();
-            recordedPersonsDao.GetOne("Marek", "Nowak");
+            using (var recorder = new Recorder(fileName, true))
+            {
+                var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
+                recordedPersonsDao.GetCount();
+            }
+
+            AssertFileHasLines(fileName, 1);
+        }
+
+        [TestMethod]
+        public void Example_Recorder_many_methods()
+        {
+            var fileName = DeleteOldTestFile();
+            var personsDao = new PersonsDao(new PersonsReader());
+
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
+                recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedPersonsDao.GetAllPersons();
+                recordedPersonsDao.GetCount();
+                recordedPersonsDao.GetOne("Marek", "Nowak");
+            }
+
+            AssertFileHasLines(fileName, 4);
         }
 
         [TestMethod]
         public void Example_Recorder_second_time_the_same_method_with_different_body()
         {
-            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-
+            var fileName = DeleteOldTestFile();
+            var accountsValuesDao = new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
             var account1 = new Account()
             {
                 AccountNumber = "2-0000-1111-2222",
@@ -73,66 +89,81 @@ namespace MethodsRecorderTests
                 AccountNumber = "1-1234-5678-9012",
                 Company = "Other company"
             };
+            AccountValue AccountValueA, AccountValueB;
 
-            var accountsValuesDao = new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
-            var recordedaccountsValuesDao = recorder
-                .CreateRecordedObject<IAccountValuesDao>(accountsValuesDao)
-                .Object;
+            using (var recorder = new Recorder(fileName, true))
+            {
+                var recordedaccountsValuesDao = recorder.CreateRecordedObject<IAccountValuesDao>(accountsValuesDao).Object;
 
-            recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
-            recordedaccountsValuesDao.Get(account1, new DateTime(2021, 7, 1));
-            recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
+                AccountValueA = recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
+                recordedaccountsValuesDao.Get(account1, new DateTime(2021, 7, 1));
+                AccountValueB = recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
+            }
 
+            AssertFileHasLines(fileName, 3);
+            Assert.AreNotEqual(AccountValueA.Value, AccountValueB.Value);
         }
 
         [TestMethod]
         public void Example_Recorder_two_classes()
         {
-            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-
-            var personsDao = new PersonsDao(new PersonsReader());
-            var recordedPersonsDao = recorder
-                .CreateRecordedObject<IPersonsDao>(personsDao)
-                .Object;
+            var fileName = DeleteOldTestFile();
             var accountsValuesDao = new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
-            var recordedaccountsValuesDao = recorder
-                .CreateRecordedObject<IAccountValuesDao>(accountsValuesDao)
-                .Object;
+            var personsDao = new PersonsDao(new PersonsReader());
 
-            recordedPersonsDao.GetOne("Jan", "Kowalski");
-            var a = recordedaccountsValuesDao.GetValue("1-1234-5678-9012", new DateTime(2021, 7, 1, 12, 0, 0));
-            recordedPersonsDao.GetOne("Karolina", "Kaczmarek");
-            recordedaccountsValuesDao.GetValue("2-0000-1111-2222", new DateTime(2021, 7, 1, 12, 0, 0));
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
+                var recordedaccountsValuesDao = recorder.CreateRecordedObject<IAccountValuesDao>(accountsValuesDao).Object;
+
+                recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedaccountsValuesDao.GetValue("1-1234-5678-9012", new DateTime(2021, 7, 1, 12, 0, 0));
+                recordedPersonsDao.GetOne("Karolina", "Kaczmarek");
+                recordedaccountsValuesDao.GetValue("2-0000-1111-2222", new DateTime(2021, 7, 1, 12, 0, 0));
+            }
+
+            AssertFileHasLines(fileName, 4);
         }
 
         [TestMethod]
-        public void Example_Recorder_constraint()
+        public void Example_Recorder_constraints_simple()
         {
-            using var recorder = new Recorder(Path.Combine(resultsFolder, GetCurrentMethod() + fileExtension));
-
+            var fileName = DeleteOldTestFile();
             var personsDao = new PersonsDao(new PersonsReader());
-            var recordedPersonsDao = recorder
-                .CreateRecordedObject<IPersonsDao>(personsDao)
-                .Record(x => x.Methods("GetOne"), RecordElements.Arguments)
-                //.Record(x => x.Methods("GetOne", "GetAllPersons"), RecordElements.All)
-                //.Record(x => x.Methods(m => m.Accessibility == MethodAccessibility.Public && m.ReturnType == typeof(int)), RecordElements.ReturnValue)
-                //.Record(x => x.Methods("GetOne").WithParameters("parmA"))
-                //.Record(x => x.Methods("GetOne").WithParameterValue("ParameterName", val => val.ToString() == "test"))
-                .Object;
 
-            recordedPersonsDao.GetOne("Jan", "Kowalski");
-            recordedPersonsDao.GetAllPersons();
-            recordedPersonsDao.GetCount();
-            recordedPersonsDao.GetOne("Marek", "Nowak");
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder
+                    .CreateRecordedObject<IPersonsDao>(personsDao)
+                    .Record(x => x.Methods("GetOne"), RecordElements.Arguments)
+                    .Object;
+
+                recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedPersonsDao.GetAllPersons();
+                recordedPersonsDao.GetCount();
+                recordedPersonsDao.GetOne("Marek", "Nowak");
+            }
+
+            AssertFileHasLines(fileName, 2);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string GetCurrentMethod()
+        private string DeleteOldTestFile()
         {
-            var st = new StackTrace();
-            var sf = st.GetFrame(1);
+            var fileName = GetFileNameFromTestName();
+            if(File.Exists(fileName))
+                File.Delete(fileName);
+            return fileName;
+        }
 
-            return sf.GetMethod().Name;
+        private string GetFileNameFromTestName()
+        {
+            return Path.Combine(resultsFolder, TestContext.TestName + fileExtension);
+        }
+
+        private static void AssertFileHasLines(string fileName, int expectedLinesCount)
+        {
+            var linesInFile = File.ReadLines(fileName).Count();
+            Assert.AreEqual(linesInFile, expectedLinesCount);
         }
     }
 }
