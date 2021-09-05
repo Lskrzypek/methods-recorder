@@ -23,6 +23,12 @@ namespace MethodsRecorderTests.ExampleData.Persons
                 .FirstOrDefault(x => x.FirstName == firstName && x.LastName == LastName);
         }
 
+        public Person GetOne(Person person)
+        {
+            return PersonsReader.ReadAllPersons()
+                .FirstOrDefault(x => x.FirstName == person.FirstName && x.LastName == person.LastName);
+        }
+
         public IEnumerable<Person> GetAdults()
         {
             return PersonsReader.ReadAllPersons()

@@ -10,7 +10,7 @@ namespace MethodsRecorder.RecordingPredicates
                 return MethodAccessibility.All;
             if (methodInfo.IsPrivate)
                 return MethodAccessibility.Private;
-            if (methodInfo.IsPrivate)
+            if (methodInfo.IsPublic)
                 return MethodAccessibility.Public;
             return MethodAccessibility.None;
         }

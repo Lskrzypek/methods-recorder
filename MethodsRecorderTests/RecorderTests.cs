@@ -126,7 +126,7 @@ namespace MethodsRecorderTests
         }
 
         [TestMethod]
-        public void Example_Recorder_constraints_simple()
+        public void Example_Recorder_constraints_methods()
         {
             var fileName = DeleteOldTestFile();
             var personsDao = new PersonsDao(new PersonsReader());
@@ -142,6 +142,102 @@ namespace MethodsRecorderTests
                 recordedPersonsDao.GetAllPersons();
                 recordedPersonsDao.GetCount();
                 recordedPersonsDao.GetOne("Marek", "Nowak");
+            }
+
+            AssertFileHasLines(fileName, 2);
+        }
+
+        [TestMethod]
+        public void Example_Recorder_constraints_allMethods()
+        {
+            var fileName = DeleteOldTestFile();
+            var personsDao = new PersonsDao(new PersonsReader());
+
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder
+                    .CreateRecordedObject<IPersonsDao>(personsDao)
+                    .Record(x => x.AllMethods())
+                    .Object;
+
+                recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedPersonsDao.GetAllPersons();
+                recordedPersonsDao.GetCount();
+                recordedPersonsDao.GetOne("Marek", "Nowak");
+            }
+
+            AssertFileHasLines(fileName, 4);
+        }
+
+        [TestMethod]
+        public void Example_Recorder_constraints_methods_func()
+        {
+            var fileName = DeleteOldTestFile();
+            var personsDao = new PersonsDao(new PersonsReader());
+
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder
+                    .CreateRecordedObject<IPersonsDao>(personsDao)
+                    .Record(x => x.Methods(m => 
+                        m.Accessibility == MethodAccessibility.Public && 
+                        m.ReturnType == typeof(int)))
+                    .Object;
+
+                recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedPersonsDao.GetAllPersons();
+                recordedPersonsDao.GetCount();
+                recordedPersonsDao.GetOne("Marek", "Nowak");
+            }
+
+            AssertFileHasLines(fileName, 1);
+        }
+
+        [TestMethod]
+        public void Example_Recorder_constraints_methods_method_withParameters()
+        {
+            var fileName = DeleteOldTestFile();
+            var personsDao = new PersonsDao(new PersonsReader());
+
+            Person person, person2;
+
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder
+                    .CreateRecordedObject<IPersonsDao>(personsDao)
+                    .Record(x => x.Methods("GetOne").WithParameters("firstName", "lastName"))
+                    .Object;
+
+                person = recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedPersonsDao.GetAllPersons();
+                recordedPersonsDao.GetCount();
+                person2 = recordedPersonsDao.GetOne(person);
+            }
+
+            Assert.AreEqual(person.LastName, person2.LastName);
+            AssertFileHasLines(fileName, 1);
+        }
+
+        [TestMethod]
+        public void Example_Recorder_constraints_methods_method_withParametersValues()
+        {
+            var fileName = DeleteOldTestFile();
+            var personsDao = new PersonsDao(new PersonsReader());
+
+            using (var recorder = new Recorder(fileName))
+            {
+                var recordedPersonsDao = recorder
+                    .CreateRecordedObject<IPersonsDao>(personsDao)
+                    .Record(x => 
+                        x.Methods("GetOne")
+                            .WithParameterValue("firstName", p => p.ToString() == "Jan")
+                            .WithParameterValue("lastName", p => p.ToString() == "Kowalski"))
+                    .Object;
+
+                recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedPersonsDao.GetOne("Marek", "Nowak");
+                recordedPersonsDao.GetOne("Jan", "Kowalski");
+                recordedPersonsDao.GetOne("Micha³", "Zmaczyñski");
             }
 
             AssertFileHasLines(fileName, 2);

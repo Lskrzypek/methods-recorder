@@ -28,7 +28,7 @@ namespace MethodsRecorder.RecordingPredicates
             if (parameters.Length != miParameters.Length)
                 isCorrect = false;
 
-            if(parameters
+            if(isCorrect && parameters
                 .Select((par, index) => (par, index))
                 .Any(x => miParameters[x.index].Name != x.par))
             {

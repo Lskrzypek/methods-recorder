@@ -6,7 +6,8 @@ namespace MethodsRecorderTests.ExampleData.Persons
     {
         IEnumerable<Person> GetAdults();
         IEnumerable<Person> GetAllPersons();
-        Person GetOne(string firstName, string LastName);
+        Person GetOne(string firstName, string lastName);
+        Person GetOne(Person person);
         int GetCount();
     }
 }
