@@ -8,6 +8,7 @@ namespace MethodsRecorder.Writters
 
         private readonly TaskQueue TaskQueue;
         private readonly IWritter Writter;
+        public bool Enabled { get; set; } = false;
 
         public AsyncWriteManager(IWritter writter)
         {
@@ -17,12 +18,16 @@ namespace MethodsRecorder.Writters
 
         public async void Write(MethodData data)
         {
+            if (!Enabled)
+                return;
+
             CurrentRecordNumber++;
             await TaskQueue.Enqueue(() => DoWrite(data));
         }
 
         public void CompleteWrite()
         {
+            Enabled = false;
             TaskQueue.WaitForAllTasks().Wait();
         }
 
@@ -31,6 +36,17 @@ namespace MethodsRecorder.Writters
             Writter.Write(data);
 
             await Task.CompletedTask;
+        }
+
+        public void InitWrite()
+        {
+            if (Enabled)
+                return;
+
+            CurrentRecordNumber = 0;
+            Enabled = true;
+
+            Writter.Init();
         }
     }
 }

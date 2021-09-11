@@ -15,7 +15,7 @@ namespace MethodsRecorderTests
         public TestContext TestContext { get; set; }
 
         private readonly string resultsFolder = "TestResults";
-        private readonly string fileExtension = ".txt";
+        private readonly string fileExtension = "txt";
 
         [TestInitialize]
         public void Initialize()
@@ -24,16 +24,20 @@ namespace MethodsRecorderTests
             {
                 Directory.CreateDirectory(resultsFolder);
             }
+
+            DeleteOldTestFile();
+            DeleteOldTestFile(2);
         }
 
         [TestMethod]
         public void Example_Recorder_simple()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
                 recordedPersonsDao.GetCount();
             }
@@ -44,11 +48,12 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_simple_async()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName, true))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
                 recordedPersonsDao.GetCount();
             }
@@ -59,11 +64,12 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_many_methods()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
                 recordedPersonsDao.GetOne("Jan", "Kowalski");
                 recordedPersonsDao.GetAllPersons();
@@ -77,7 +83,7 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_second_time_the_same_method_with_different_body()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var accountsValuesDao = new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
             var account1 = new Account()
             {
@@ -93,6 +99,7 @@ namespace MethodsRecorderTests
 
             using (var recorder = new Recorder(fileName, true))
             {
+                recorder.StartRecording();
                 var recordedaccountsValuesDao = recorder.CreateRecordedObject<IAccountValuesDao>(accountsValuesDao).Object;
 
                 AccountValueA = recordedaccountsValuesDao.GetCurrent(account2.AccountNumber);
@@ -107,12 +114,13 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_two_classes()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var accountsValuesDao = new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
                 var recordedaccountsValuesDao = recorder.CreateRecordedObject<IAccountValuesDao>(accountsValuesDao).Object;
 
@@ -128,11 +136,12 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_constraints_methods()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder
                     .CreateRecordedObject<IPersonsDao>(personsDao)
                     .Record(x => x.Methods("GetOne"), RecordElements.Arguments)
@@ -150,11 +159,12 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_constraints_allMethods()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder
                     .CreateRecordedObject<IPersonsDao>(personsDao)
                     .Record(x => x.AllMethods())
@@ -172,11 +182,12 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_constraints_methods_func()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder
                     .CreateRecordedObject<IPersonsDao>(personsDao)
                     .Record(x => x.Methods(m => 
@@ -196,13 +207,14 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_constraints_methods_method_withParameters()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             Person person, person2;
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder
                     .CreateRecordedObject<IPersonsDao>(personsDao)
                     .Record(x => x.Methods("GetOne").WithParameters("firstName", "lastName"))
@@ -221,11 +233,12 @@ namespace MethodsRecorderTests
         [TestMethod]
         public void Example_Recorder_constraints_methods_method_withParametersValues()
         {
-            var fileName = DeleteOldTestFile();
+            var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
             using (var recorder = new Recorder(fileName))
             {
+                recorder.StartRecording();
                 var recordedPersonsDao = recorder
                     .CreateRecordedObject<IPersonsDao>(personsDao)
                     .Record(x => 
@@ -243,17 +256,66 @@ namespace MethodsRecorderTests
             AssertFileHasLines(fileName, 2);
         }
 
-        private string DeleteOldTestFile()
+
+        [TestMethod]
+        public void Example_Recorder_pause()
         {
-            var fileName = GetFileNameFromTestName();
-            if(File.Exists(fileName))
-                File.Delete(fileName);
-            return fileName;
+            var fileName = GetFullFileNameFromTestName();
+            var personsDao = new PersonsDao(new PersonsReader());
+
+            using (var recorder = new Recorder(fileName))
+            {
+                recorder.StartRecording();
+                var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
+                
+                recordedPersonsDao.GetCount();
+                recorder.Pause();
+                recordedPersonsDao.GetAdults();
+                recorder.Unpause();
+                recordedPersonsDao.GetAdults();
+            }
+
+            AssertFileHasLines(fileName, 2);
         }
 
-        private string GetFileNameFromTestName()
+        [TestMethod]
+        public void Example_Recorder_stop_start()
         {
-            return Path.Combine(resultsFolder, TestContext.TestName + fileExtension);
+            var fileName = GetFullFileNameFromTestName();
+            var personsDao = new PersonsDao(new PersonsReader());
+
+            using (var recorder = new Recorder(fileName))
+            {
+                recorder.StartRecording();
+                var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
+
+                recordedPersonsDao.GetCount();
+                recorder.StopRecording();
+
+                recordedPersonsDao.GetAdults();
+
+                recorder.StartRecording();
+                recordedPersonsDao.GetAdults();
+                recorder.StopRecording();
+            }
+
+            AssertFileHasLines(fileName, 1);
+            AssertFileHasLines(GetFullFileNameFromTestName(2), 1);
+        }
+
+        private void DeleteOldTestFile(int fileNumber = 1)
+        {
+            var fullFileName = GetFullFileNameFromTestName(fileNumber);
+            if (File.Exists(fullFileName))
+                File.Delete(fullFileName);
+        }
+
+        private string GetFullFileNameFromTestName(int fileNumber = 1)
+        {
+            if(fileNumber == 1)
+                return Path.Combine(resultsFolder, $"{TestContext.TestName}.{fileExtension}");
+
+            return Path.Combine(resultsFolder, $"{TestContext.TestName}_{fileNumber}.{fileExtension}");
         }
 
         private static void AssertFileHasLines(string fileName, int expectedLinesCount)
