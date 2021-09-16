@@ -19,7 +19,7 @@ using (var recorder = new Recorder(resultsFolder))
 
 
 
-First, we need to create a Recorder object. In the constructor you indicate the folder for saving files. Then we create a recorded object based on orginal object. When any method in this object is called, the result and arguments values of that method are written to the file. Every time when we call StartRecording and StopRecording a new file is created. This is what the generated file (MethodsRecorder_2021_09_16_16_41_49.txt) looks like:
+First, we need to create a Recorder object. In the constructor we select the folder for saving files. Then we create a recorded object based on orginal object. When any method in this object is called, the result and arguments values of that method are written to the file. Every time when we call StartRecording and StopRecording a new file is created. This is what the generated file looks like (MethodsRecorder_2021_09_16_16_41_49.txt):
 
 ```
 {
@@ -36,7 +36,7 @@ First, we need to create a Recorder object. In the constructor you indicate the 
 ```
 
 ###Playing
-Now we can run the method GetOne("Jan", "Kowalski") even if we don't have access to the database at this moment. This can be helpful in creating unit tests or in debugging when we do not have access to the production database. All we need is access to the interface IPersonsDao.
+OK. We have a history. Now we can run the method GetOne("Jan", "Kowalski") even if we don't have access to the database at this moment. This can be helpful in creating unit tests or in debugging when we do not have access to the production database. All the necessary information is contained in the file.
 
 ```
 var player = new Player("MethodsRecorder_2021_09_16_16_41_49.txt");
