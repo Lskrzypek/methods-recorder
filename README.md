@@ -35,7 +35,7 @@ First, we need to create a Recorder object. In the constructor we select the fol
 }
 ```
 
-###Playing
+### Playing
 OK. We have a history. Now we can run the method GetOne("Jan", "Kowalski") even if we don't have access to the database at this moment. This can be helpful in creating unit tests or in debugging when we do not have access to the production database. All the necessary information is contained in the file.
 
 ```
