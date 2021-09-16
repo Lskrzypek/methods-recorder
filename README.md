@@ -1,5 +1,5 @@
 # methods-recorder
-It is a  small library to recording methods calls including arguments and result values. It create files with all informations and now you can create mock objects with data.
+It is a  small library to recording methods calls including arguments and result values. It create files with all informations and generate mock objects with data. This can be helpful in creating unit tests or in debugging when we do not have access to the production database.
 
 ## Example
 ### Recording
