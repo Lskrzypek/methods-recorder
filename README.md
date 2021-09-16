@@ -8,10 +8,10 @@ This is an example recording code. PersonsDao is an example of a class that we w
 ```
 using (var recorder = new Recorder(resultsFolder))
 {
+    IPersonsDao personsDao = new PersonsDao(new PersonsReader());
     IPersonsDao personsDaoRecording = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
 
     recorder.StartRecording();
-    IPersonsDao personsDao = new PersonsDao(new PersonsReader());
     var personResults = personsDaoRecording.GetAllPersons();
     recorder.StopRecording();
 }
