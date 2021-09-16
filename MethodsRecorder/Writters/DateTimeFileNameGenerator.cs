@@ -2,14 +2,15 @@
 
 namespace MethodsRecorder.Writters
 {
-    internal class DateTimeFileNameGenerator : IFileNameGenerator
+    public class DateTimeFileNameGenerator : IFileNameGenerator
     {
         private const string Extension = "txt";
 
-        public string GenerateFileName(MethodData data)
+        public string GenerateFileName(MethodData data, Package package)
         {
+            var packageName = package.Name ?? "MethodsRecorder";
             var date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
-            return $"{data.Package.Name}_{date}.{Extension}";
+            return $"{packageName}_{date}.{Extension}";
         }
     }
 }

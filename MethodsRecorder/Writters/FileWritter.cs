@@ -6,6 +6,8 @@ namespace MethodsRecorder.Writters
 {
     public class FileWritter : IWritter
     {
+        public Package Package { get; set; }
+
         private readonly string DirectoryPath;
         private readonly IFileNameGenerator FileNameGenerator;
 
@@ -53,7 +55,7 @@ namespace MethodsRecorder.Writters
 
         private void SetFileName(MethodData data)
         {
-            FullFileName = Path.Combine(DirectoryPath, FileNameGenerator.GenerateFileName(data));
+            FullFileName = Path.Combine(DirectoryPath, FileNameGenerator.GenerateFileName(data, Package));
         }
 
         private void WriteFile(MethodData data)

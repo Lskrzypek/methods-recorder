@@ -65,6 +65,9 @@ namespace MethodsRecorder.RecordedObjectCreators
 
         private static RecordElements GetRecordElements(IEnumerable<IRecordingPredicate> predicates)
         {
+            if (!predicates.Any())
+                return RecordElements.All;
+
             RecordElements ret = RecordElements.Nothing;
             predicates.ToList().ForEach(x => { ret |= x.RecordElements; });
             return ret;

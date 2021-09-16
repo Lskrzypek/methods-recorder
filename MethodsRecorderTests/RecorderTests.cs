@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using MethodsRecorder.RecordingPredicates;
 using System.Linq;
+using MethodsRecorder.Writters;
 
 namespace MethodsRecorderTests
 {
@@ -35,7 +36,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
@@ -51,7 +52,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName, true))
+            using (var recorder = new Recorder(GetWritter(), true))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
@@ -67,7 +68,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
@@ -97,7 +98,7 @@ namespace MethodsRecorderTests
             };
             AccountValue AccountValueA, AccountValueB;
 
-            using (var recorder = new Recorder(fileName, true))
+            using (var recorder = new Recorder(GetWritter(), true))
             {
                 recorder.StartRecording();
                 var recordedaccountsValuesDao = recorder.CreateRecordedObject<IAccountValuesDao>(accountsValuesDao).Object;
@@ -118,7 +119,7 @@ namespace MethodsRecorderTests
             var accountsValuesDao = new AccountValuesDao(new AccountValuesReader(), new CurrentTime());
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
@@ -139,7 +140,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder
@@ -162,7 +163,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder
@@ -185,7 +186,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder
@@ -212,7 +213,7 @@ namespace MethodsRecorderTests
 
             Person person, person2;
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder
@@ -236,7 +237,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder
@@ -263,7 +264,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
@@ -284,7 +285,7 @@ namespace MethodsRecorderTests
             var fileName = GetFullFileNameFromTestName();
             var personsDao = new PersonsDao(new PersonsReader());
 
-            using (var recorder = new Recorder(fileName))
+            using (var recorder = new Recorder(GetWritter()))
             {
                 recorder.StartRecording();
                 var recordedPersonsDao = recorder.CreateRecordedObject<IPersonsDao>(personsDao).Object;
@@ -316,6 +317,11 @@ namespace MethodsRecorderTests
                 return Path.Combine(resultsFolder, $"{TestContext.TestName}.{fileExtension}");
 
             return Path.Combine(resultsFolder, $"{TestContext.TestName}_{fileNumber}.{fileExtension}");
+        }
+
+        private IWritter GetWritter()
+        {
+            return new FileWritter(resultsFolder, new NameBasedFileNameGenerator(TestContext.TestName));
         }
 
         private static void AssertFileHasLines(string fileName, int expectedLinesCount)

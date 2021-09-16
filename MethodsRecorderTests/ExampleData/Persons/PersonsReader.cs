@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace MethodsRecorderTests.ExampleData.Persons
 {
@@ -14,7 +15,7 @@ namespace MethodsRecorderTests.ExampleData.Persons
 
         public IEnumerable<Person> ReadAllPersons()
         {
-            return Persons;
+            return Persons.ToList();
         }
     }
 }

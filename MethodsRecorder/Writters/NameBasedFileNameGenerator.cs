@@ -1,6 +1,6 @@
 ﻿namespace MethodsRecorder.Writters
 {
-    internal class NameBasedFileNameGenerator : IFileNameGenerator
+    public class NameBasedFileNameGenerator : IFileNameGenerator
     {
         private const string Extension = "txt";
         private readonly string FileName;
@@ -11,7 +11,7 @@
             FileName = fileName;
         }
 
-        public string GenerateFileName(MethodData data)
+        public string GenerateFileName(MethodData data, Package package)
         {
             if (FileNumber == 1)
             {

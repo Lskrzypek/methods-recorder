@@ -1,7 +1,6 @@
 ﻿using System;
 using MethodsRecorder.RecordedObjectCreators;
 using MethodsRecorder.Writters;
-using System.IO;
 
 namespace MethodsRecorder
 {
@@ -14,12 +13,9 @@ namespace MethodsRecorder
         private readonly IWriteManager WriteManager;
         private bool _disposed = false;
 
-        public Recorder(string fullFileName, bool isAsync = false)
+        public Recorder(string directoryPath, bool isAsync = false)
         {
-            var (file, directory) = SplitFileName(fullFileName);
-            var fileNameGenerator = new NameBasedFileNameGenerator(file);
-
-            Writter = new FileWritter(directory, fileNameGenerator);
+            Writter = new FileWritter(directoryPath);
             IsAsync = isAsync;
 
             WriteManager = new WriteManagerFactory(Writter).Create(isAsync);
@@ -65,9 +61,6 @@ namespace MethodsRecorder
         {
             WriteManager.Enabled = true;
         }
-
-        private static (string File, string Directory) SplitFileName(string fullFileName) =>
-            (Path.GetFileNameWithoutExtension(fullFileName), Path.GetDirectoryName(fullFileName));        
 
         #region Dispose
         public void Dispose() => Dispose(true);

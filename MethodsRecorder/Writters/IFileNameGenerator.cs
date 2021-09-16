@@ -2,6 +2,6 @@
 {
     public interface IFileNameGenerator
     {
-        string GenerateFileName(MethodData data);
+        string GenerateFileName(MethodData data, Package package);
     }
 }
