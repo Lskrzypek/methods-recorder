@@ -3,7 +3,7 @@ It is a  small library to recording methods calls including arguments and result
 
 ## Example
 ### Recording
-This is an example recording code. PersonsDao is an example of a class that reads some data from a database. In this example, we will record a call to the GetAllPersons method.
+This is an example recording code. PersonsDao is an example of a class that reads some data from a database. In this example, we will record a call to the GetOne method.
 
 ```
 using (var recorder = new Recorder(resultsFolder))
